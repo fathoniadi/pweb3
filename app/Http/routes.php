@@ -11,6 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'homepage@index');
+Route::get('/login', 'homepage@login');
+Route::post('/doLogin', 'homepage@doLogin');

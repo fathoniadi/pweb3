@@ -31,14 +31,15 @@
             }
 
             .title {
-                font-size: 80px;
+                font-size: 40px;
             }
         </style>
     </head>
     <body>
         <div class="container">
+            <div class="title" style="margin-bottom:30px">@yield('title')</div>
             <div class="content">
-                <div class="title">Aksi.in is Comingsoon :)</div>
+                @yield('content')
             </div>
         </div>
     </body>
