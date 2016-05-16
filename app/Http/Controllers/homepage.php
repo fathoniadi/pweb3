@@ -81,7 +81,7 @@ class homepage extends Controller
                     //echo $user;
                 }
 
-                Session::put('userLogin',base64_encode($user));
+                Session::put('user',base64_encode($user));
                 //echo "Gagal".base64_decode(base64_decode(Session::get('userLogin')));
 
                 if(Input::get('rememberme'))

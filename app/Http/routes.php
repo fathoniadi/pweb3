@@ -18,3 +18,4 @@ Route::post('/doRegister', 'homepage@doregister');
 Route::get('/doRegister', 'homepage@register');
 Route::get('/timeline', 'Dashboard@timeline');
 Route::post('/doLogin', 'homepage@doLogin');
+Route::get('/logout','Dashboard@logout');

@@ -40,7 +40,7 @@
     <body>
         <div class="container">
             <div class="content">
-                <div class="title">Woops your request doesn't exit :(</div>
+                <div class="title">Woops your request doesn't exist :(</div>
             </div>
         </div>
     </body>
