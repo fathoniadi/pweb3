@@ -3,13 +3,25 @@
 @section('title')
 	Login Aksi.in
 @endsection
-@section('content') 
+@section('content')
+@if ($errors->has())
+    <div class="alert-danger" style="color:red; text-align:left; font-weight:bold">
+        @foreach ($errors->all() as $error)
+        {{ $error }}<br>
+        @endforeach
+    </div>
+@endif
+<div> 
 <form method="post" action="{{url('/')}}/doLogin">
-	<input type="text" name="username" placeholder="username">
+	<input type="text" name="username" required="" placeholder="username">
 	<br>
-	<input type="password" name="password" placeholder="password">
+	<input type="password" name="password" required="" placeholder="password">
+	<br>
+	<input type="checkbox" name="rememberme"  placeholder="" value="1">
+	Remember me
 	<br>
 	<input style="display:block; background-color:blue; color:white" type="submit" value="Login">
 	<input type="hidden" name="_token" value="{{csrf_token() }}">
 </form>
-@endsection 
+</div>
+@endsection

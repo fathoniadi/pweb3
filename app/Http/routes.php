@@ -13,4 +13,7 @@
 
 Route::get('/', 'homepage@index');
 Route::get('/login', 'homepage@login');
+Route::get('/register', 'homepage@register');
+Route::post('/doRegister', 'homepage@doregister');
+Route::get('/doRegister', 'homepage@register');
 Route::post('/doLogin', 'homepage@doLogin');
