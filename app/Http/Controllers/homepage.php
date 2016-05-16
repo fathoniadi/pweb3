@@ -12,14 +12,35 @@ use Redirect;
 use App\Http\Controllers\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Html\FormFacade;
-use Carbon\Carbon;
 use DB;
 use Session;
 use Cookie;
-use Illuminate\Http\Response;
+use App\Http\Controllers\CheckingSession;
 
 class homepage extends Controller
 {
+    private $checkingsession;
+
+    public function __construct()
+    {
+        if(Cookie::get('user')) 
+        {
+            $user = Cookie::get('user');
+        }
+        else
+        {
+            $user = base64_decode(Session::get('user'));
+        }
+
+        $this->checkingsession = new CheckingSession();
+        $flag = $this->checkingsession->Check($user);
+        if($flag==1) 
+        {
+            //echo "Redirect ke Timeline";
+            Redirect::to('timeline')->send();
+        }
+    }
+
     public function index()
     {
     	return view('welcome');
@@ -46,7 +67,7 @@ class homepage extends Controller
         }
         else
         {
-            echo "Sukses";
+            //echo "Sukses";
             $username = Input::get('username');
             $password = Input::get('password');
             $password = md5($password);
@@ -55,26 +76,29 @@ class homepage extends Controller
            if($flagLogin)
            {
                 foreach ($flagLogin as $row) {
-                    $user = $row->username;
+                    //echo $row->username;
+                    $user = base64_encode($row->username);
+                    //echo $user;
                 }
 
-                Session::put('user',$user);
+                Session::put('userLogin',base64_encode($user));
+                //echo "Gagal".base64_decode(base64_decode(Session::get('userLogin')));
 
                 if(Input::get('rememberme'))
                 {
-                       $value = $request->cookie('test-cookie');
-
-                        if ($value == 'test') {
-                            echo "aaa";
-                        }
-
-                        $response = new Response();
-
-                        $response->withCookie('test-cookie', 'test', 60);
+                    Cookie::queue('user', $user, 24*60*30);
                 }
 
-              
+                return Redirect::to('timeline');
+                //echo "aaa";
+
+
                 
+           }
+           else
+           {
+                return Redirect::to('login')
+                ->withErrors("Username atau Password salah");
            }
 
         
@@ -82,6 +106,7 @@ class homepage extends Controller
         }
 
     }
+
 
     public function register()
     {

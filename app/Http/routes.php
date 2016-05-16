@@ -16,4 +16,5 @@ Route::get('/login', 'homepage@login');
 Route::get('/register', 'homepage@register');
 Route::post('/doRegister', 'homepage@doregister');
 Route::get('/doRegister', 'homepage@register');
+Route::get('/timeline', 'Dashboard@timeline');
 Route::post('/doLogin', 'homepage@doLogin');
