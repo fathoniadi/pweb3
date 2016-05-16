@@ -11,6 +11,12 @@
         @endforeach
     </div>
 @endif
+@if(session('message'))
+    <div class="alert-danger" style="color:green; text-align:left; font-weight:bold">
+        {{session('message')}}
+    </div>
+@endif
+
 <div>
 	<form method="post" action="{{url('/')}}/doRegister">
 		<input type="text" name="username" required="" placeholder="username">

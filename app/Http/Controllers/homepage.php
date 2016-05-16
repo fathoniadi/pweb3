@@ -145,11 +145,11 @@ class homepage extends Controller
 
             if($useraccount->save())
             {
-                echo "Data Masuk";
+                return Redirect::to('register')->with("message","Berhasil Registrasi");
             }
             else
             {
-                echo "Data gagal input database";
+                return Redirect::to('register')->withErrors("Gagal register");
             }
         }
     }
