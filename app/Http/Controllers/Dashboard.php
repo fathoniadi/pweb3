@@ -28,13 +28,13 @@ class Dashboard extends Controller
         $flag = $this->checkingsession->Check($user);
         if($flag==0) 
         {
-            //Redirect::to('login')->send();
+            Redirect::to('login')->send();
         }
 	}
 
     public function timeline()
     {
-    	return view('errors/503');
+    	return view('dashboard/timeline');
     }
 
     public function logout(Request $request)

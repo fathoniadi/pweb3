@@ -1,11 +1,11 @@
 @extends('homepage.layouts.layout')
 
 @section('title')
-	Register Aksi.in
+	Register Aksi.in Today
 @endsection
 @section('content')
 @if ($errors->has())
-    <div class="alert-danger" style="color:red; text-align:left; font-weight:bold">
+    <div class="alert-danger" style="color:red;  text-align:left; font-weight:bold">
         @foreach ($errors->all() as $error)
         {{ $error }}<br>
         @endforeach
@@ -27,7 +27,7 @@
 		<br>
 		<input type="password" name="confirmPassword" required="" placeholder="confirm password">
 		<br>
-		<input style="display:block; background-color:blue; color:white" type="submit" value="Register">
+		<input type="submit" value="Register">
 		<input type="hidden" name="_token" value="{{csrf_token() }}">
 	</form>
 </div>

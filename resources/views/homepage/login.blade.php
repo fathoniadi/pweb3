@@ -18,9 +18,9 @@
 	<input type="password" name="password" required="" placeholder="password">
 	<br>
 	<input type="checkbox" name="rememberme"  placeholder="" value="1">
-	Remember me
+	<span>Remember me</span>
 	<br>
-	<input style="display:block; background-color:blue; color:white" type="submit" value="Login">
+	<input type="submit" value="Login">
 	<input type="hidden" name="_token" value="{{csrf_token() }}">
 </form>
 </div>
