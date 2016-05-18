@@ -3,10 +3,11 @@
   <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
-    <title>Faceboot - A Facebook style template for Bootstrap</title>
+    <title>Aksi.in</title>
     <meta name="generator" content="Bootply" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="{{url('/')}}/resources/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -28,17 +29,12 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span> 
                           </button>
-                          <a class="navbar-brand" href="#">WebSiteName</a>
+                          <a class="navbar-brand" href="#">Aksi.in</a>
                         </div>
                         <div class="collapse navbar-collapse" id="myNavbar">
-                          <ul class="nav navbar-nav">
-                            <li class="active"><a href="#">Home</a></li>
-                            <li><a href="#">Page 1</a></li>
-                            <li><a href="#">Page 2</a></li> 
-                            <li><a href="#">Page 3</a></li> 
-                          </ul>
                           <ul class="nav navbar-nav navbar-right">
-                            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                            <li class="active"><a href="#">Home</a></li>
+                            <li><a href="#">Notification</a></li>
                             <li class="dropdown">
                               <a class="dropdown-toggle" data-toggle="dropdown" href="#">User
                               <span class="caret"></span></a>
@@ -122,6 +118,113 @@
                $(this).text("Hide");
                $("#well-content").show();
             }
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('click','#addGambar',function(e) {
+            e.preventDefault();
+            if($(this).attr('flag')==0)
+            {
+              $("#gambarPendukung").css('display','');
+              $(this).attr('flag','1')
+            }
+            else
+            {
+              $("#gambarPendukung").css('display','none');
+              $(this).attr('flag','0')
+            }
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('click','.tolike',function(e) {
+            e.preventDefault();
+            var flagLike = $(this).attr('flagLike');
+            var id = $(this).attr('post-id');
+            var token =$("#token"+id).val();
+            //alert(token);
+            if(flagLike==1)
+            {
+              $(this).attr('class','btn btn-default tolike');
+              $(this).attr('flagLike','0');
+              $.ajax({
+                type:'POST',
+                url:'doUnLike',
+                data:'id='+id+'&_token='+token+'&action='+flagLike,
+                success:function(response){
+                }
+              });
+            }
+            else if(flagLike==0)
+            {
+              $.ajax({
+                type:'POST',
+                url:'doLike',
+                data:'id='+id+'&_token='+token+'&action='+flagLike,
+                success:function(response){
+                }
+              });
+
+              $(this).attr('class','btn btn-info tolike active');
+              $(this).attr('flagLike','1');
+            }
+
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('click','.tojoin',function(e) {
+            e.preventDefault();
+            var flagJoin = $(this).attr('flagJoin');
+            var id = $(this).attr('post-id');
+            var token =$("#token"+id).val();
+            if(flagJoin==1)
+            {
+              $(this).attr('class','btn btn-default tojoin');
+              $(this).attr('flagJoin','0');
+              $.ajax({
+                type:'POST',
+                url:'doUnJoin',
+                data:'id='+id+'&_token='+token+'&action='+flagJoin,
+                success:function(response){
+                }
+              });
+            }
+            else if(flagJoin==0)
+            {
+              $(this).attr('class','btn btn-warning tojoin active');
+              $(this).attr('flagJoin','1');
+              $.ajax({
+                type:'POST',
+                url:'doJoin',
+                data:'id='+id+'&_token='+token+'&action='+flagJoin,
+                success:function(response){
+                  
+                }
+              });
+            }
+
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('submit','.formComment',function(e) {
+           e.preventDefault();
+           var id = $(this).attr('post-id');
+           alert($("#inputComment"+id).val());
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('click','.more',function(e) {
+           e.preventDefault();
+           var last_id = $(this).attr('last-id');
+           var token = $("#tokenmore"+last_id).val();
+           $.ajax({
+                type:'POST',
+                url:'timelineajax',
+                data:'last_id='+last_id+'&_token='+token,
+                success:function(response){
+                    $("#showmore"+last_id).remove();
+                    $("#postList").append(response);
+                }
+              });
         });
     });
     </script>

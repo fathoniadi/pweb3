@@ -19,3 +19,26 @@ Route::get('/doRegister', 'homepage@register');
 Route::get('/timeline', 'Dashboard@timeline');
 Route::post('/doLogin', 'homepage@doLogin');
 Route::get('/logout','Dashboard@logout');
+Route::post('/doPostEvent','Dashboard@doPostEvent');
+Route::post('/doLike','Dashboard@doLike');
+Route::post('/doJoin','Dashboard@doJoin');
+Route::post('/doLike','Dashboard@doLike');
+Route::post('/doUnLike','Dashboard@doUnLike');
+Route::post('/doUnJoin','Dashboard@doUnJoin');
+Route::post('/timelineajax','Dashboard@timelineajax');
+Route::get('/doPostEvent',function()
+{
+	return view('errors/404');
+});
+Route::get('/doLike',function()
+{
+	return view('errors/404');
+});
+Route::get('/doJoin',function()
+{
+	return view('errors/404');
+});
+Route::get('/doUnJoin',function()
+{
+	return view('errors/404');
+});

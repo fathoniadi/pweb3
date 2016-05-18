@@ -11,4 +11,5 @@ class userAccount extends Model
     public $timestamps = false;
 
     protected $fillable = array('username', 'email', 'password', 'lastLogin', 'dateJoin');
+
 }
