@@ -1,5 +1,6 @@
 @extends('dashboard.layouts.layout')
 @section('right-col')
+<input type="hidden" id="token" name="_token" value="{{csrf_token() }}">
 <?php $counterLike=0; $counterJoin=0;$liked[0]=-1;$joined[0]=-1;?>
 @foreach($userLoginLikeds as $userLoginLiked)
   <?php $liked[++$counterLike]=$userLoginLiked->like_post?>
@@ -22,8 +23,8 @@
     </div>
 @endif                          
   <div class="well">
-       <h4 style="display:inline">New Post</h4>
-       <a href="#" class="pull-right" show="0" id="newPost">Show</a>
+       <h4 title="Click to add new post" style="display:inline" class="newPost" show="0" flagNewPost="0">New Post</h4>
+       <a title="Click to add new post" href="#" class="pull-right newPost" show="0" flagNewPost="1">Show</a>
      <div class="well-content" style="margin-top: 1.5em;display:none"  id="well-content"> 
        <form class="form" method="POST" action="{{url('/')}}/doPostEvent" style="margin: 0 auto" enctype="multipart/form-data">
         <div class="input-group" style="margin-bottom: 10px;width:100%;">
@@ -66,8 +67,14 @@
     </div>
   </div>
   <div class="panel panel-default">
-    <div class="panel-body" style="text-align:center">
-      <span class="pull-right">Show More</span>
+    <div class="panel-body" style="">
+      <div class="input-group pull-right" style="" >
+        <select class="form-control" id="orderTimeline" flagSort="1">
+               <option value="1" selected>New</option>
+               <option value="2">Popular Like</option>
+               <option value="3">Popular Join</option>
+        </select>
+      </div>
     </div>
  </div>
  <div id="postList">
@@ -80,7 +87,7 @@
               <a href="#" class="pull-right dropdown-toggle" data-toggle="dropdown">Action</a>
                 <ul class="pull-right dropdown-menu">
                   <li><a href="#">Edit</a></li>
-                  <li><a href="#">Delete</a></li>
+                  <li><a href="#" class="deletepost" post-id="{{$post->post_id}}">Delete</a></li>
                 </ul>
             </li>
           @endif
@@ -107,15 +114,18 @@
                 @endif
                 <p style="margin-top:10px; font-size:20px">{{$post->post_text}}</p>
             </div>
-            <div style="border-top:1px solid">
+            <div class="clearfix"></div>
+            <div style="border-top:1px solid; margin-top:20px">
               <h4>{{$post->user_fullname}}</h4>
-              <p style="display:inline">{{$post->post_date}}</p>
+              <p style>{{$post->post_date}}</p>
+              <span title="Jumlah like" style="font-size:15px"><i class="material-icons" style="font-size:15px;margin:0;padding:0">plus_one</i> : 1</span>
+              <span title="Jumlah joined" style="display:inline;font-size:15px;padding-left:40px"><i class="material-icons" style="font-size:15px;margin:0;padding:0">group_add</i> : 1</span>
             </div>
             <div class="clearfix"></div>
-            <div class="commentList" style=" border-top:1px solid; margin-top:18px">
-              <div class="Comment-Action" style="padding:5px 20px;text-align:center;">
-                <a href="">Load More Comment</a>
-              </div>
+            <div class="Comment-Action" style="padding:5px 20px;text-align:center; border-top:1px solid">
+                <a href="" post-id="{{$post->post_id}}" class="moreComment">Load More Comment</a>
+            </div>
+            <div id="commentList{{$post->post_id}}">
               <div class="Comment-Content">
                 <div class="photo-comment">
                   <img src="//placehold.it/150x150">
@@ -129,11 +139,12 @@
             <div class="input-group" style="margin-top:10px">
               <div class="input-group-btn">
                 <button flagLike="@if(in_array($post->post_id, $liked)){{1}}@else{{0}} @endif" post-id="{{$post->post_id}}" title="Like" class="@if(in_array($post->post_id, $liked)) {{'btn btn-info active tolike'}} @else{{'btn btn-default tolike'}} @endif"><i class="material-icons" style="font-size:14px">plus_one</i></button>
-                <button flagJoin="@if(in_array($post->post_id, $joined)){{1}}@else{{0}} @endif" post-id="{{$post->post_id}}" title="Join" class="@if(in_array($post->post_id, $joined)) {{'btn btn-warning active tojoin'}} @else{{'btn btn-default tojoin'}} @endif"><i class="material-icons" style="font-size:14px;">group_add</i></button>
+                 @if($post->post_owner != base64_decode(base64_decode(Session::get('user'))))
+                  <button flagJoin="@if(in_array($post->post_id, $joined)){{1}}@else{{0}} @endif" post-id="{{$post->post_id}}" title="Join" class="@if(in_array($post->post_id, $joined)) {{'btn btn-warning active tojoin'}} @else{{'btn btn-default tojoin'}} @endif"><i class="material-icons" style="font-size:14px;">group_add</i></button>
+                @endif
               </div>
             <form class="formComment" post-id="{{$post->post_id}}">
               <input type="text" id="inputComment{{$post->post_id}}" post-id="{{$post->post_id}}" name="comment" class="form-control" placeholder="Add a comment..">
-              <input type="hidden" id="token{{$post->post_id}}" name="_token" value="{{csrf_token() }}">
             </div>
             </form>
             </div>
@@ -145,7 +156,6 @@
  <div id="showmore{{$post->post_id}}" class="panel panel-default">
     <div class="panel-body" style="text-align:center">
       <span class="more" last-id="{{$post->post_id}}">Show More</span>
-      <form><input type="hidden" id="tokenmore{{$post->post_id}}" name="_token" value="{{csrf_token() }}"></form>
     </div>
   </div>
 @endif

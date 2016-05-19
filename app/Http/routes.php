@@ -25,12 +25,21 @@ Route::post('/doJoin','Dashboard@doJoin');
 Route::post('/doLike','Dashboard@doLike');
 Route::post('/doUnLike','Dashboard@doUnLike');
 Route::post('/doUnJoin','Dashboard@doUnJoin');
-Route::post('/timelineajax','Dashboard@timelineajax');
+Route::post('/deletePost','Dashboard@deletePost');
+Route::post('/timelineajaxmore','Dashboard@timelineajaxmote');
 Route::get('/doPostEvent',function()
 {
 	return view('errors/404');
 });
+Route::get('/timelineajax',function()
+{
+	return view('errors/404');
+});
 Route::get('/doLike',function()
+{
+	return view('errors/404');
+});
+Route::get('/doUnLike',function()
 {
 	return view('errors/404');
 });

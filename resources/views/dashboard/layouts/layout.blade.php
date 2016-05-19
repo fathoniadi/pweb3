@@ -58,16 +58,9 @@
                           @yield('left-col')
                           @yield('right-col')
                        </div><!--/row-->
-                      
-                        <div class="row">
-                          <div class="col-sm-6">
-                            <a href="#">Twitter</a> <small class="text-muted">|</small> <a href="#">Facebook</a> <small class="text-muted">|</small> <a href="#">Google+</a>
-                          </div>
-                        </div>
-                      
                         <div class="row" id="footer">    
                           <div class="col-sm-6">
-                            
+                              <p>Aksi.in</p>
                           </div>
                           <div class="col-sm-6">
                             <p>
@@ -75,16 +68,6 @@
                             </p>
                           </div>
                         </div>
-                      
-                      <hr>
-                      
-                      <h4 class="text-center">
-                      <a href="http://bootply.com/96266" target="ext">Download this Template @Bootply</a>
-                      </h4>
-                        
-                      <hr>
-                        
-                      
                     </div><!-- /col-9 -->
                 </div><!-- /padding -->
             </div>
@@ -103,19 +86,19 @@
     <script src="{{url('/')}}/resources/assets/js/scripts.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
-        $(document).on('click','#newPost',function(e) {
+        $(document).on('click','.newPost',function(e) {
             e.preventDefault();
             var flagShow = $(this).attr('show');
             if(flagShow==1)
             {
-               $(this).attr('show',0);
-               $(this).text("Show");
+               $(".newPost").attr('show',0);
+               if($(this).attr('flagNewPost')==1) $(this).text("Show");
                $("#well-content").hide();
             }
             else
             {
-               $(this).attr('show',1);
-               $(this).text("Hide");
+               $(".newPost").attr('show',1);
+               if($(this).attr('flagNewPost')==1) $(this).text("Hide");
                $("#well-content").show();
             }
         });
@@ -140,7 +123,7 @@
             e.preventDefault();
             var flagLike = $(this).attr('flagLike');
             var id = $(this).attr('post-id');
-            var token =$("#token"+id).val();
+            var token =$("#token").val();
             //alert(token);
             if(flagLike==1)
             {
@@ -175,7 +158,7 @@
             e.preventDefault();
             var flagJoin = $(this).attr('flagJoin');
             var id = $(this).attr('post-id');
-            var token =$("#token"+id).val();
+            var token =$("#token").val();
             if(flagJoin==1)
             {
               $(this).attr('class','btn btn-default tojoin');
@@ -208,23 +191,59 @@
       $(document).on('submit','.formComment',function(e) {
            e.preventDefault();
            var id = $(this).attr('post-id');
-           alert($("#inputComment"+id).val());
+           //alert($("#inputComment"+id).val());
+           $("#commentList"+id).prepend($("#inputComment"+id).val());
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('click','.moreComment',function(e) {
+           e.preventDefault();
+           var id = $(this).attr('post-id');
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('click','.deletepost',function(e) {
+          e.preventDefault();
+          var post_id = $(this).attr("post-id");
+          var token = $("#token").val();
+          if(confirm('Are you sure to delete this post?')) 
+          {
+            $.ajax({
+              type:'POST',
+              url:'deletePost',
+              data:'post_id='+post_id+'&_token='+token+'&user={{base64_decode(base64_decode(Session::get("user")))}}',
+              success:function(response){
+                  alert(response);
+                  window.location.reload();
+              }
+            });
+          }
         });
     });
     $(document).ready(function() {
       $(document).on('click','.more',function(e) {
            e.preventDefault();
            var last_id = $(this).attr('last-id');
-           var token = $("#tokenmore"+last_id).val();
+           var token =$("#token").val();
+           var postOrder = $("#orderTimeline").attr('flagSort');
+           //alert(postOrder);
            $.ajax({
                 type:'POST',
-                url:'timelineajax',
-                data:'last_id='+last_id+'&_token='+token,
+                url:'timelineajaxmore',
+                data:'last_id='+last_id+'&_token='+token+'&post_order='+postOrder,
                 success:function(response){
                     $("#showmore"+last_id).remove();
                     $("#postList").append(response);
                 }
               });
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('change','#orderTimeline',function(e) {
+           e.preventDefault();
+           alert($(this).val());
+           $(this).attr('flagSort',$(this).val());
+           
         });
     });
     </script>

@@ -23,6 +23,7 @@ class Dashboard extends Controller
 {
 	private $checkingsession;
     private $userLogin;
+    private $userLoginLocation;
 	public function __construct()
 	{
 		if(Cookie::get('user')) 
@@ -41,24 +42,35 @@ class Dashboard extends Controller
             Redirect::to('login')->send();
         }
         $this->userLogin = base64_decode($user);
+        $flagUserLocations = DB::SELECT("SELECT user_location from userDetail where username = '".$this->userLogin."'");
+        foreach ($flagUserLocations as $flagUserLocation) {
+            $this->userLoginLocation = $flagUserLocation->user_location;
+        }
 	}
 
     public function timeline()
     {
-        $data['posts'] = DB::select("select * from userDetail, postEvent where userDetail.username = postEvent.post_owner order by postEvent.post_id desc LIMIT 1");
+        $data['posts'] = DB::select("select * from userDetail, postEvent where userDetail.username = postEvent.post_owner and postEvent.post_location = ".$this->userLoginLocation." order by postEvent.post_id desc LIMIT 1");
         $data['userLoginLikeds'] = postLike::where('like_user',$this->userLogin)->get();
         $data['userLoginJoineds'] = postJoin::where('join_user',$this->userLogin)->get();
         $data['userInfos'] = DB::select("SELECT * from userDetail, userAccount where userDetail.username = userAccount.username and userAccount.username = '".$this->userLogin."'");
     	return view('dashboard/timeline',$data);
     }
 
-    public function timelineajax()
+    public function timelineajaxmore()
     {
-        $data['posts'] = DB::select("select * from userDetail, postEvent where userDetail.username = postEvent.post_owner and postEvent.post_id < ".Input::get('last_id')." order by postEvent.post_id desc  LIMIT 1");
+        $data['posts'] = DB::select("select * from userDetail, postEvent where userDetail.username = postEvent.post_owner and postEvent.post_location = ".$this->userLoginLocation."  and postEvent.post_id < ".Input::get('last_id')." order by postEvent.post_id desc  LIMIT 1");
         $data['userLoginLikeds'] = postLike::where('like_user',$this->userLogin)->get();
         $data['userLoginJoineds'] = postJoin::where('join_user',$this->userLogin)->get();
         return view('dashboard/timelineajax',$data);
-        //echo Input::get('last_id');
+    }
+
+    public function deletepost()
+    {
+        $flagDeletePost = DB::table('postEvent')->where('post_id',Input::get('post_id'))->where('post_owner',Input::get('user'))->delete();
+
+        if($flagDeletePost) echo "Sukses";
+        else echo "Gagal";
     }
 
     public function doPostEvent()
