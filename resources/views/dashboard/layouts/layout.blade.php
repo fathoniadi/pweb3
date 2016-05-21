@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link href="{{url('/')}}/resources/assets/css/bootstrap.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{url('/')}}/resources/assets/css/bootstrap-table.css">
     <!--[if lt IE 9]>
       <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -84,6 +85,7 @@
     <script src="{{url('/')}}/resources/assets/js/jquery.min.js"></script>
     <script src="{{url('/')}}/resources/assets/js/bootstrap.min.js"></script>
     <script src="{{url('/')}}/resources/assets/js/scripts.js"></script>
+    <script src="{{url('/')}}/resources/assets/js/bootstrap-table.js"></script>
     <script type="text/javascript">
       $(document).ready(function() {
         $(document).on('click','.newPost',function(e) {
@@ -131,9 +133,10 @@
               $(this).attr('flagLike','0');
               $.ajax({
                 type:'POST',
-                url:'doUnLike',
+                url:'{{url("/")}}/doUnLike',
                 data:'id='+id+'&_token='+token+'&action='+flagLike,
                 success:function(response){
+                  $("#jumlahLike"+id).text(response);
                 }
               });
             }
@@ -141,9 +144,10 @@
             {
               $.ajax({
                 type:'POST',
-                url:'doLike',
+                url:'{{url("/")}}/doLike',
                 data:'id='+id+'&_token='+token+'&action='+flagLike,
                 success:function(response){
+                  $("#jumlahLike"+id).text(response);
                 }
               });
 
@@ -165,9 +169,10 @@
               $(this).attr('flagJoin','0');
               $.ajax({
                 type:'POST',
-                url:'doUnJoin',
+                url:'{{url("/")}}/doUnJoin',
                 data:'id='+id+'&_token='+token+'&action='+flagJoin,
                 success:function(response){
+                  $("#jumlahJoin"+id).text(response);
                 }
               });
             }
@@ -177,10 +182,10 @@
               $(this).attr('flagJoin','1');
               $.ajax({
                 type:'POST',
-                url:'doJoin',
+                url:'{{url("/")}}/doJoin',
                 data:'id='+id+'&_token='+token+'&action='+flagJoin,
                 success:function(response){
-                  
+                  $("#jumlahJoin"+id).text(response);
                 }
               });
             }
@@ -191,8 +196,18 @@
       $(document).on('submit','.formComment',function(e) {
            e.preventDefault();
            var id = $(this).attr('post-id');
-           //alert($("#inputComment"+id).val());
-           $("#commentList"+id).prepend($("#inputComment"+id).val());
+           var id = $(this).attr('post-id');
+           var commentContent = $("#inputComment"+id).val();
+           var token = $('#token').val();
+           $.ajax({
+                type:'POST',
+                url:'{{url("/")}}/addComment',
+                data:'id='+id+'&_token='+token+'&commentContent='+commentContent,
+                success:function(response){
+                  alert(response);
+                  window.location.reload();
+                }
+            });
         });
     });
     $(document).ready(function() {
@@ -210,30 +225,31 @@
           {
             $.ajax({
               type:'POST',
-              url:'deletePost',
+              url:'{{url("/")}}/deletePost',
               data:'post_id='+post_id+'&_token='+token+'&user={{base64_decode(base64_decode(Session::get("user")))}}',
               success:function(response){
                   alert(response);
-                  window.location.reload();
+                  window.location="{{url('/')}}/timeline";
               }
             });
           }
         });
     });
     $(document).ready(function() {
-      $(document).on('click','.more',function(e) {
+      $(document).on('click','#more',function(e) {
            e.preventDefault();
-           var last_id = $(this).attr('last-id');
+           var counter = parseInt($(this).attr('counter'))+1;
            var token =$("#token").val();
            var postOrder = $("#orderTimeline").attr('flagSort');
+           //alert(counter);
            //alert(postOrder);
            $.ajax({
                 type:'POST',
-                url:'timelineajaxmore',
-                data:'last_id='+last_id+'&_token='+token+'&post_order='+postOrder,
+                url:'{{url("/")}}/timelineorder',
+                data:'counter='+counter+'&_token='+token+'&flagOrder='+postOrder,
                 success:function(response){
-                    $("#showmore"+last_id).remove();
-                    $("#postList").append(response);
+                    $("#more").attr('counter',counter);
+                    $("#postList").html(response);
                 }
               });
         });
@@ -241,10 +257,42 @@
     $(document).ready(function() {
       $(document).on('change','#orderTimeline',function(e) {
            e.preventDefault();
-           alert($(this).val());
+           var flagOrder = $(this).val();
+           //alert(flagOrder);
+           var token = $("#token").val();
+           var counter = parseInt($("#more").attr('counter'));
+           //alert(counter);
            $(this).attr('flagSort',$(this).val());
-           
+           $.ajax({
+                type:'POST',
+                url:'{{url("/")}}/timelineorder',
+                data:'flagOrder='+flagOrder+'&_token='+token+'&counter='+counter,
+                success:function(response){
+                    $("#postList").html(response);
+                }
+              });
         });
     });
+    $(document).ready(function() {
+      $(document).on('click','#popupdelete',function(e) {
+           e.preventDefault();
+           //alert(flagOrder);
+           var token = $("#token").val();
+          //alert($(this).attr('post-id'));
+          var post_id = $(this).attr('post-id');
+          alert(post_id);
+          $.ajax({
+                type:'POST',
+                url:'{{url("/")}}/deletephotoevent',
+                data:'post_id='+post_id+'&_token='+token,
+                success:function(response){
+                    //$("#postList").html(response);
+                    alert(response);
+                    window.location.reload();
+                }
+              });
+        });
+    });
+
     </script>
 </html>

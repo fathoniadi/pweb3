@@ -21,62 +21,7 @@
         @else <p>{{session('message_fail')}}</p>
         @endif
     </div>
-@endif                          
-  <div class="well">
-       <h4 title="Click to add new post" style="display:inline" class="newPost" show="0" flagNewPost="0">New Post</h4>
-       <a title="Click to add new post" href="#" class="pull-right newPost" show="0" flagNewPost="1">Show</a>
-     <div class="well-content" style="margin-top: 1.5em;display:none"  id="well-content"> 
-       <form class="form" method="POST" action="{{url('/')}}/doPostEvent" style="margin: 0 auto" enctype="multipart/form-data">
-        <div class="input-group" style="margin-bottom: 10px;width:100%;">
-          <input type="text" class="form-control" name="nama_event" placeholder="Nama Event">
-          <!-- <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span> -->
-        </div>
-        <div class="input-group" style="margin-bottom: 10px;width:100%;">
-          <textarea class="form-control" name="deskripsi_event" rows="5" placeholder="Deskripsi"></textarea>
-          <!-- <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span> -->
-        </div>
-        <div class="input-group" style="margin-bottom: 10px;width:100%;">
-          <input type="datetime-local" name="waktu_event" title="Waktu Event" class="form-control" placeholder="Waktu Event">
-          <!-- <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span> -->
-        </div>
-        <div class="input-group" style="margin-bottom: 10px;width:100%;">
-          <select class="form-control" id="location" name="lokasi_event">
-             <option value="">Pilih Kota</option>
-             <option value="1">Jakarta</option>
-             <option value="2">Tangerang</option>
-             <option value="3">Bekasi</option>
-             <option value="4">Bandung</option>
-             <option value="5">Bogor</option>
-             <option value="6">Semarang</option>
-             <option value="8">Solo</option>
-             <option value="7">Yogyakarta</option>
-             <option value="9">Surabaya</option>
-             <option value="10">Klaten</option>
-          </select>
-        </div>
-        <div class="input-group" style="margin-bottom: 10px;width:100%;">
-          <a href="#" flag="0" id="addGambar">Tambahkan gambar</a>
-          <input style="display:none" type="file" id="gambarPendukung" name="gambar_event" title="Gambar pendukung" class="form-control" placeholder="Gambar pendukung">
-          <!-- <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span> -->
-        </div>
-        <div class="input-group" style="margin-left:auto; margin-right:0;" >
-          <input type="hidden" name="_token" value="{{csrf_token() }}">
-          <button  class="btn btn-primary">Post</button>
-        </div>
-      </form>
-    </div>
-  </div>
-  <div class="panel panel-default">
-    <div class="panel-body" style="">
-      <div class="input-group pull-right" style="" >
-        <select class="form-control" id="orderTimeline" flagSort="1">
-               <option value="1" selected>New</option>
-               <option value="2">Popular Like</option>
-               <option value="3">Popular Join</option>
-        </select>
-      </div>
-    </div>
- </div>
+@endif
  <div id="postList">
     @if($posts)
       @foreach($posts as $post)
@@ -119,22 +64,23 @@
               <h4>{{$post->user_fullname}}</h4>
               <p style>{{$post->post_date}}</p>
               <span title="Jumlah like" style="font-size:15px"><i class="material-icons" style="font-size:15px;margin:0;padding:0">plus_one</i> : <span id="jumlahLike{{$post->post_id}}">
-              <?php $flagLike=0;?>
-              @foreach($jumlahLikePosts as $jumlahLikePost)
-                @if($jumlahLikePost->like_post==$post->post_id) {{$jumlahLikePost->jumlahLikePost}}<?php $flagLike=1;break;?>
+                <?php $flagLike=0;?>
+                @foreach($jumlahLikePosts as $jumlahLikePost)
+                  @if($jumlahLikePost->like_post==$post->post_id) {{$jumlahLikePost->jumlahLikePost}}<?php $flagLike=1;break;?>
+                  @endif
+                @endforeach
+                @if(!$flagLike) {{'0'}}
                 @endif
-              @endforeach
-              @if(!$flagLike) {{'0'}}
-              @endif
-              </span></span>
+                </span>
+              </span>
               <span title="Jumlah joined" style="display:inline;font-size:15px;padding-left:40px"><i class="material-icons" style="font-size:15px;margin:0;padding:0">group_add</i> : <span id="jumlahJoin{{$post->post_id}}">
                 <?php $flagJoin=0;?>
-              @foreach($jumlahJoinPosts as $jumlahJoinPost)
-                @if($jumlahJoinPost->join_post==$post->post_id) {{$jumlahJoinPost->jumlahJoinPost}}<?php $flagJoin=1;break;?>
+                @foreach($jumlahJoinPosts as $jumlahJoinPost)
+                  @if($jumlahJoinPost->join_post==$post->post_id) {{$jumlahJoinPost->jumlahJoinPost}}<?php $flagJoin=1;break;?>
+                  @endif
+                @endforeach
+                @if(!$flagJoin) {{'0'}}
                 @endif
-              @endforeach
-              @if(!$flagJoin) {{'0'}}
-              @endif
               </span></span>
             </div>
             <div class="clearfix"></div>
@@ -167,15 +113,9 @@
         </div>
         @endforeach
       </div>
- 
-
- <div id="showmore{{$post->post_id}}" class="panel panel-default">
-    <div class="panel-body" style="text-align:center">
-      <span id="more" counter="1">Show More</span>
-    </div>
-  </div>
+    </div> 
 @endif
-</div> 
+</div>
 @endsection
 @section('left-col')
 <div class="col-sm-5">

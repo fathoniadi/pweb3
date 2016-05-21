@@ -13,7 +13,7 @@
       <li class="dropdown">
         <a href="#" class="pull-right dropdown-toggle" data-toggle="dropdown">Action</a>
           <ul class="pull-right dropdown-menu">
-            <li><a href="#">Edit</a></li>
+            <li><a href="{{url('/')}}/editpost/{{$post->post_id}}">Edit</a></li>
             <li><a href="#" class="deletepost" post-id="{{$post->post_id}}">Delete</a></li>
           </ul>
       </li>
@@ -45,8 +45,24 @@
       <div style="border-top:1px solid; margin-top:20px">
         <h4>{{$post->user_fullname}}</h4>
         <p style>{{$post->post_date}}</p>
-        <span title="Jumlah like" style="font-size:15px"><i class="material-icons" style="font-size:15px;margin:0;padding:0">plus_one</i> : 1</span>
-        <span title="Jumlah joined" style="display:inline;font-size:15px;padding-left:40px"><i class="material-icons" style="font-size:15px;margin:0;padding:0">group_add</i> : 1</span>
+        <span title="Jumlah like" style="font-size:15px"><i class="material-icons" style="font-size:15px;margin:0;padding:0">plus_one</i> : <span id="jumlahLike{{$post->post_id}}">
+          <?php $flagLike=0;?>
+          @foreach($jumlahLikePosts as $jumlahLikePost)
+            @if($jumlahLikePost->like_post==$post->post_id) {{$jumlahLikePost->jumlahLikePost}}<?php $flagLike=1;break;?>
+            @endif
+          @endforeach
+          @if(!$flagLike) {{'0'}}
+          @endif
+        </span></span>
+        <span title="Jumlah joined" style="display:inline;font-size:15px;padding-left:40px"><i class="material-icons" style="font-size:15px;margin:0;padding:0">group_add</i> : <span id="jumlahJoin{{$post->post_id}}">
+        <?php $flagJoin=0;?>
+          @foreach($jumlahJoinPosts as $jumlahJoinPost)
+            @if($jumlahJoinPost->join_post==$post->post_id) {{$jumlahJoinPost->jumlahJoinPost}}<?php $flagJoin=1;break;?>
+            @endif
+          @endforeach
+          @if(!$flagJoin) {{'0'}}
+          @endif
+        </span></span>
       </div>
       <div class="clearfix"></div>
       <div id="commentList{{$post->post_id}}" style=" border-top:1px solid; margin-top:18px">
@@ -77,15 +93,4 @@
       </div>
   </div>
   @endforeach
-  <div id="showmore{{$post->post_id}}" class="panel panel-default">
-    <div class="panel-body" style="text-align:center">
-      <span class="more" last-id="{{$post->post_id}}">Show More</span>
-    </div>
-  </div>
-@else
- <div class="panel panel-default">
-    <div class="panel-body" style="text-align:center">
-      <span>Mentok Bos</span>
-    </div>
- </div>
 @endif
