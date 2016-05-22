@@ -32,6 +32,8 @@ Route::post('/doupdatepost','Dashboard@doupdatepost');
 Route::post('/timelineajaxmore','Dashboard@timelineajaxmore');
 Route::post('/timelineorder','Dashboard@timelineorder');
 Route::post('/deletephotoevent','Dashboard@deletephotoevent');
+Route::post('/commentajax','Dashboard@commentajax');
+Route::post('/deletecomment','Dashboard@deletecomment');
 Route::get('/editpost/{id_post}','Dashboard@editpost');
 Route::get('/doPostEvent',function()
 {

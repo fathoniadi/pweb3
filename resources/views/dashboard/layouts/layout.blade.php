@@ -34,7 +34,7 @@
                         </div>
                         <div class="collapse navbar-collapse" id="myNavbar">
                           <ul class="nav navbar-nav navbar-right">
-                            <li class="active"><a href="#">Home</a></li>
+                            <li class="active"><a href="{{url('/')}}/timeline">Timeline</a></li>
                             <li><a href="#">Notification</a></li>
                             <li class="dropdown">
                               <a class="dropdown-toggle" data-toggle="dropdown" href="#">User
@@ -214,6 +214,33 @@
       $(document).on('click','.moreComment',function(e) {
            e.preventDefault();
            var id = $(this).attr('post-id');
+           var token = $('#token').val();
+           $.ajax({
+                type:'POST',
+                url:'{{url("/")}}/commentajax',
+                data:'id='+id+'&_token='+token,
+                success:function(response){
+                  $("#commentList"+id).html(response);
+                }
+            });
+           $(this).hide();
+        });
+    });
+    $(document).ready(function() {
+      $(document).on('click','.deletecomment',function(e) {
+           e.preventDefault();
+           var id = $(this).attr('comment-id');
+           var token = $('#token').val();
+           //alert(id);
+           $.ajax({
+                type:'POST',
+                url:'{{url("/")}}/deletecomment',
+                data:'comment_id='+id+'&_token='+token,
+                success:function(response){
+                  //alert(response);
+                }
+            });
+           window.location.reload();
         });
     });
     $(document).ready(function() {
@@ -280,7 +307,7 @@
            var token = $("#token").val();
           //alert($(this).attr('post-id'));
           var post_id = $(this).attr('post-id');
-          alert(post_id);
+          //alert(post_id);
           $.ajax({
                 type:'POST',
                 url:'{{url("/")}}/deletephotoevent',
@@ -293,6 +320,8 @@
               });
         });
     });
+
+
 
     </script>
 </html>

@@ -84,18 +84,54 @@
               </span></span>
             </div>
             <div class="clearfix"></div>
-            <div class="Comment-Action" style="padding:5px 20px;text-align:center; border-top:1px solid">
-                <a href="" post-id="{{$post->post_id}}" class="moreComment">Load More Comment</a>
-            </div>
-            <div id="commentList{{$post->post_id}}">
-              <div class="Comment-Content">
-                <div class="photo-comment">
-                  <img src="//placehold.it/150x150">
-                </div>
-                <h4>Ini Nama</h4>
-                <p style="display:inline;>If you're looking for help with Bootstrap code, the <code>twitter-bootstrap</code> tag at <a href="http://stackoverflow.com/questions/tagged/twitter-bootstrap">Stackoverflow</a> is a good place to find answers.asdsasdasdasdsadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd</p>
-                <p>2 Oktober 2016</p>
+            <?php $counterCommentLists =0;$counterComment=0;?>
+              @if($comments)
+                @foreach($comments as $dump_comment)
+                  @if($dump_comment->comment_post == $post->post_id)
+                    <?php $counterCommentLists++; ?>
+                  @endif
+                @endforeach
+              @endif
+              @if($counterCommentLists>3)
+              <div class="Comment-Action" style="padding:5px 20px;text-align:center; border-top:1px solid">
+                  <a href="" post-id="{{$post->post_id}}" class="moreComment">Tampilkan Semua Komentar</a>
               </div>
+              @endif
+              <div id="commentList{{$post->post_id}}">
+              @if($comments)
+                @foreach($comments as $comment)
+                  @if($comment->comment_post == $post->post_id)
+                    @if($counterCommentLists<=3)
+                      @if($comment->comment_user == base64_decode(base64_decode(Session::get('user'))) || $post->post_owner == base64_decode(base64_decode(Session::get('user'))))
+                         <span href="" class="pull-right deletecomment" comment-id="{{$comment->comment_id}}" style="margin-right:20px; margin-top:10px">Delete</span>
+                      @endif
+                      <div class="Comment-Content">
+                        <div class="photo-comment">
+                          <img src="//placehold.it/150x150">
+                        </div>
+                        <h4>{{$comment->user_fullname}}</h4>
+                        <p style="display:inline";>{{$comment->comment_text}}</p>
+                        <p>{{$comment->comment_date}}</p>
+                      </div>
+                    @else
+                      @if($counterCommentLists-3<=$counterComment)
+                        @if($comment->comment_user == base64_decode(base64_decode(Session::get('user'))) || $post->post_owner == base64_decode(base64_decode(Session::get('user'))))
+                         <span href="" class="pull-right deletecomment" comment-id="{{$comment->comment_id}}" style="margin-right:20px; margin-top:10px">Delete</span>
+                         @endif
+                        <div class="Comment-Content">
+                          <div class="photo-comment">
+                            <img src="//placehold.it/150x150">
+                          </div>
+                          <h4>{{$comment->user_fullname}}</h4>
+                          <p style="display:inline";>{{$comment->comment_text}}</p>
+                          <p>{{$comment->comment_date}}</p>
+                        </div>
+                      @endif
+                    @endif
+                   <?php $counterComment++; ?>
+                  @endif
+                @endforeach
+              @endif
             </div>
             
             <div class="input-group" style="margin-top:10px">

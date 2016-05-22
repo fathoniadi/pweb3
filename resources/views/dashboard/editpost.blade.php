@@ -37,8 +37,8 @@
           <!-- <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span> -->
         </div>
         <div class="input-group" style="margin-bottom: 10px;width:100%;">
-          <span style="margin-bottom:5px">Waktu Event Terakhir : {{$post->post_date}}</span>
-          <input type="datetime-local" name="waktu_event" title="Waktu Event" class="form-control" placeholder="Waktu Event">
+          <?php $waktu_event = str_replace(' ','T',$post->post_date)?>
+          <input type="datetime-local" name="waktu_event" title="Waktu Event" class="form-control" value="{{$waktu_event}}" placeholder="Waktu Event">
           <input type="text" name="post_id" class="form-control" style="display:none" hidden="" value="{{$post->post_id}}">
           <!-- <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span> -->
         </div>

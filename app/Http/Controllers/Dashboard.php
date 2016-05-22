@@ -30,6 +30,7 @@ class Dashboard extends Controller
 		if(Cookie::get('user')) 
         {
             $user = Cookie::get('user');
+            Session::put('user',base64_encode(Cookie::get('user')));
         }
         elseif(Session::get('user'))
         {
@@ -43,11 +44,18 @@ class Dashboard extends Controller
             Redirect::to('login')->send();
         }
         $this->userLogin = base64_decode($user);
+        //Session::put('user',$this->userLogin);
         $flagUserLocations = DB::SELECT("SELECT user_location from userDetail where username = '".$this->userLogin."'");
         foreach ($flagUserLocations as $flagUserLocation) {
             $this->userLoginLocation = $flagUserLocation->user_location;
         }
 	}
+
+    public function commentajax()
+    {
+        $data['comments'] = DB::SELECT("SELECT * FROM userDetail, postComment where userDetail.username = postComment.comment_user and postComment.comment_post=".Input::get('id')."");
+        return view('dashboard/commentajax',$data);
+    }
 
     public function timeline()
     {
@@ -59,7 +67,13 @@ class Dashboard extends Controller
         $data['userJoinedPosts'] = DB::SELECT("SELECT * from postEvent, postJoin where postEvent.post_id = postJoin.join_post and postJoin.join_user = '".$this->userLogin."' and postJoin.join_flag=1");
         $data['jumlahLikePosts'] = DB::SELECT("select like_post,count(like_id) as jumlahLikePost from postLike group by like_post");
         $data['jumlahJoinPosts'] = DB::SELECT("select join_post, count(join_id) as jumlahJoinPost from postJoin group by join_post");
+        $data['comments'] = DB::SELECT("SELECT * FROM userDetail, postComment where userDetail.username = postComment.comment_user");
     	return view('dashboard/timeline',$data);
+    }
+
+    public function deletecomment()
+    {
+        $flagDeleteComment = postComment::where('comment_id',Input::get('comment_id'))->delete();
     }
 
     public function timelineorder()
@@ -91,7 +105,8 @@ class Dashboard extends Controller
         $data['userLoginJoineds'] = postJoin::where('join_user',$this->userLogin)->get();
         $data['userInfos'] = DB::select("SELECT * from userDetail, userAccount where userDetail.username = userAccount.username and userAccount.username = '".$this->userLogin."'");
         $data['jumlahLikePosts'] = DB::SELECT("select like_post,count(like_id) as jumlahLikePost from postLike group by like_post");
-         $data['jumlahJoinPosts'] = DB::SELECT("select join_post, count(join_id) as jumlahJoinPost from postJoin group by join_post");
+        $data['jumlahJoinPosts'] = DB::SELECT("select join_post, count(join_id) as jumlahJoinPost from postJoin group by join_post");
+        $data['comments'] = DB::SELECT("SELECT * FROM userDetail, postComment where userDetail.username = postComment.comment_user");
         return view('dashboard/timelineajax',$data);
     }
 
@@ -273,6 +288,7 @@ class Dashboard extends Controller
         $data['userJoinedPosts'] = DB::SELECT("SELECT * from postEvent, postJoin where postEvent.post_id = postJoin.join_post and postJoin.join_user = '".$this->userLogin."' and postJoin.join_flag=1");
         $data['jumlahLikePosts'] = DB::SELECT("select like_post,count(like_id) as jumlahLikePost from postLike group by like_post");
         $data['jumlahJoinPosts'] = DB::SELECT("select join_post, count(join_id) as jumlahJoinPost from postJoin group by join_post");
+        $data['comments'] = DB::SELECT("SELECT * FROM userDetail, postComment where userDetail.username = postComment.comment_user");
         return view('dashboard/post',$data);
         }
         else return view('errors/404');
