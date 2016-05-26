@@ -283,7 +283,6 @@
                   {
 
                     $("#more").text('End of Post');
-                    $("#more").attr('id',' ');
                   }
                   else
                   {
