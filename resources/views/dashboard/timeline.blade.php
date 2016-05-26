@@ -203,7 +203,7 @@
       </div>
  
 
- <div id="showmore{{$post->post_id}}" class="panel panel-default">
+ <div id="showmore" class="panel panel-default">
     <div class="panel-body" style="text-align:center">
       <span id="more" counter="1">Show More</span>
     </div>

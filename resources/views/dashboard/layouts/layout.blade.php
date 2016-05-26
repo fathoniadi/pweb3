@@ -40,8 +40,8 @@
                               <a class="dropdown-toggle" data-toggle="dropdown" href="#">User
                               <span class="caret"></span></a>
                               <ul class="dropdown-menu">
-                                <li><a href="#">Page 1-2</a></li>
-                                <li><a href="#">Page 1-3</a></li>
+                                <li><a href="#">Change Profile</a></li>
+                                <li><a href="#">Setting</a></li>
                                 <li><a href="{{url('/')}}/logout">Logout</a></li>
                               </ul>
                             </li>
@@ -232,15 +232,19 @@
            var id = $(this).attr('comment-id');
            var token = $('#token').val();
            //alert(id);
-           $.ajax({
-                type:'POST',
-                url:'{{url("/")}}/deletecomment',
-                data:'comment_id='+id+'&_token='+token,
-                success:function(response){
-                  //alert(response);
-                }
-            });
-           window.location.reload();
+           if(confirm('Are you sure to delete this comment?'))
+           {
+              $.ajax({
+                  type:'POST',
+                  url:'{{url("/")}}/deletecomment',
+                  data:'comment_id='+id+'&_token='+token,
+                  success:function(response){
+                    //alert(response);
+                  }
+              });
+              window.location.reload();
+            }
+           
         });
     });
     $(document).ready(function() {
@@ -275,8 +279,17 @@
                 url:'{{url("/")}}/timelineorder',
                 data:'counter='+counter+'&_token='+token+'&flagOrder='+postOrder,
                 success:function(response){
+                  if(response==-1)
+                  {
+
+                    $("#more").text('End of Post');
+                    $("#more").attr('id',' ');
+                  }
+                  else
+                  {
                     $("#more").attr('counter',counter);
                     $("#postList").html(response);
+                  }
                 }
               });
         });

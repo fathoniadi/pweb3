@@ -101,13 +101,22 @@ class Dashboard extends Controller
                 on postEvent.post_id = postJoin.join_post 
                 group by postEvent.post_id) asd where userDetail.username = asd.post_owner and asd.post_location = ".$this->userLoginLocation." order by asd.jumlahJoin desc LIMIT ".Input::get("counter")."");
         }
-        $data['userLoginLikeds'] = postLike::where('like_user',$this->userLogin)->get();
-        $data['userLoginJoineds'] = postJoin::where('join_user',$this->userLogin)->get();
-        $data['userInfos'] = DB::select("SELECT * from userDetail, userAccount where userDetail.username = userAccount.username and userAccount.username = '".$this->userLogin."'");
-        $data['jumlahLikePosts'] = DB::SELECT("select like_post,count(like_id) as jumlahLikePost from postLike group by like_post");
-        $data['jumlahJoinPosts'] = DB::SELECT("select join_post, count(join_id) as jumlahJoinPost from postJoin group by join_post");
-        $data['comments'] = DB::SELECT("SELECT * FROM userDetail, postComment where userDetail.username = postComment.comment_user");
-        return view('dashboard/timelineajax',$data);
+
+        $flagPost = new postEvent;
+        $counterFlag = $flagPost->get();
+
+        if($counterFlag->count()>=Input::get("counter"))
+        {
+
+            $data['userLoginLikeds'] = postLike::where('like_user',$this->userLogin)->get();
+            $data['userLoginJoineds'] = postJoin::where('join_user',$this->userLogin)->get();
+            $data['userInfos'] = DB::select("SELECT * from userDetail, userAccount where userDetail.username = userAccount.username and userAccount.username = '".$this->userLogin."'");
+            $data['jumlahLikePosts'] = DB::SELECT("select like_post,count(like_id) as jumlahLikePost from postLike group by like_post");
+            $data['jumlahJoinPosts'] = DB::SELECT("select join_post, count(join_id) as jumlahJoinPost from postJoin group by join_post");
+            $data['comments'] = DB::SELECT("SELECT * FROM userDetail, postComment where userDetail.username = postComment.comment_user");
+            return view('dashboard/timelineajax',$data);
+        }
+        else echo '-1';
     }
 
 
