@@ -68,3 +68,9 @@ Route::get('/doUnJoin',function()
 {
 	return view('errors/404');
 });
+
+
+Route::get('/group/{idgroup}','groupcon@group');
+Route::post('/deletegComment','groupcon@deletegcomment');
+Route::post('/doPostgComment' , 'groupcon@doPostgComment');
+Route::post('/moregcomment','groupcon@moregcomment');

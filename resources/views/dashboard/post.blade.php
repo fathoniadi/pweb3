@@ -209,7 +209,12 @@
         <?php $userJoinedPostCounter=0;?>
         @if($userJoinedPosts)
           @foreach($userJoinedPosts as $userJoinedPost)
-            <a href="http://bootply.com/tagged/modal" class="list-group-item">{{$userJoinedPost->post_nameEvent}}</a>
+            @foreach($groups as $group)
+              @if($userJoinedPost->join_post == $group->Event_id)
+                <a href="{{url('/')}}/group/{{$group->group_id}}" class="list-group-item">{{$userJoinedPost->post_nameEvent}}</a>
+              <?php break; ?>
+              @endif;
+            @endforeach
             <?php $userJoinedPostCounter++;?>
             <?php if($userJoinedPostCounter==1) 
               {
@@ -279,7 +284,12 @@
             <tbody>
                 @if($userJoinedPosts)
                 @foreach($userJoinedPosts as $userJoinedPost)
-                  <tr><td><a href="http://bootply.com/tagged/modal">{{$userJoinedPost->post_nameEvent}}</a></td></tr>
+                  @foreach($groups as $group)
+                    @if($userJoinedPost->join_post == $group->Event_id)
+                      <tr><td><a href="{{url('/')}}/group/{{$group->group_id}}">{{$userJoinedPost->post_nameEvent}}</a></td></tr>
+                      <?php break;?>
+                    @endif
+                  @endforeach
                 @endforeach
               @else <tr><td>Tidak Ada</td></tr>
               @endif

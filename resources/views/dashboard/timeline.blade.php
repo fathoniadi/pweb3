@@ -39,7 +39,7 @@
           <input type="datetime-local" name="waktu_event" title="Waktu Event" class="form-control" placeholder="Waktu Event">
           <!-- <span class="input-group-btn"><button class="btn btn-lg btn-primary" type="button">OK</button></span> -->
         </div>
-        <div class="input-group" style="margin-bottom: 10px;width:100%;">
+        <!-- <div class="input-group" style="margin-bottom: 10px;width:100%;">
           <select class="form-control" id="location" name="lokasi_event">
              <option value="">Pilih Kota</option>
              <option value="1">Jakarta</option>
@@ -53,7 +53,7 @@
              <option value="9">Surabaya</option>
              <option value="10">Klaten</option>
           </select>
-        </div>
+        </div> -->
         <div class="input-group" style="margin-bottom: 10px;width:100%;">
           <a href="#" flag="0" id="addGambar">Tambahkan gambar</a>
           <input style="display:none" type="file" id="gambarPendukung" name="gambar_event" title="Gambar pendukung" class="form-control" placeholder="Gambar pendukung">
@@ -267,7 +267,12 @@
         <?php $userJoinedPostCounter=0;?>
         @if($userJoinedPosts)
           @foreach($userJoinedPosts as $userJoinedPost)
-            <a href="http://bootply.com/tagged/modal" class="list-group-item">{{$userJoinedPost->post_nameEvent}}</a>
+            @foreach($groups as $group)
+              @if($userJoinedPost->join_post == $group->Event_id)
+                <a href="{{url('/')}}/group/{{$group->group_id}}" class="list-group-item">{{$userJoinedPost->post_nameEvent}}</a>
+              <?php break; ?>
+              @endif;
+            @endforeach
             <?php $userJoinedPostCounter++;?>
             <?php if($userJoinedPostCounter==1) 
               {
@@ -337,7 +342,12 @@
             <tbody>
                 @if($userJoinedPosts)
                 @foreach($userJoinedPosts as $userJoinedPost)
-                  <tr><td><a href="http://bootply.com/tagged/modal">{{$userJoinedPost->post_nameEvent}}</a></td></tr>
+                  @foreach($groups as $group)
+                    @if($userJoinedPost->join_post == $group->Event_id)
+                      <tr><td><a href="{{url('/')}}/group/{{$group->group_id}}">{{$userJoinedPost->post_nameEvent}}</a></td></tr>
+                      <?php break;?>
+                    @endif
+                  @endforeach
                 @endforeach
               @else <tr><td>Tidak Ada</td></tr>
               @endif

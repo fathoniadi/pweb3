@@ -333,6 +333,50 @@
         });
     });
 
+    $(document).ready(function() {
+      $(document).on('click','.deletecomment',function(e) {
+          e.preventDefault();
+          var post_id = $(this).attr("post-id");
+          var token = $("#token").val();
+          if(confirm('Are you sure to delete this Comment?')) 
+          {
+            $.ajax({
+              type:'POST',
+              url:'{{url("/")}}/deletegComment',
+              data:'post_id='+post_id+'&_token='+token+'&user={{base64_decode(base64_decode(Session::get("user")))}}',
+              success:function(response){
+                  //alert(response);
+                  window.location.reload();
+              }
+            });
+          }
+        });
+    });
+
+
+  
+      $(document).ready(function() {
+      $(document).on('click','#morecommentgroup',function(e) {
+           e.preventDefault();
+           var last_id = $(this).attr('last-id');
+           var counter = parseInt($(this).attr('counter')) + 5;
+           var token =$("#token").val();
+           var groupid = $(this).attr('group');
+          // alert(counter);
+           $.ajax({
+                type:'POST',
+                url:'{{url("/")}}/moregcomment',
+                data:'last_id='+last_id+'&_token='+token+'&counter='+counter+'&groupid='+groupid,
+                success:function(response){
+                    $("#morecommentgroup").attr('counter', counter);
+                    $("#commentList").html(response);
+                }
+              });
+
+        });
+    });
+
+
 
 
     </script>

@@ -19,6 +19,7 @@ use App\userDetail;
 use App\postJoin;
 use App\postLike;
 use App\postComment;
+use App\group;
 
 class Dashboard extends Controller
 {
@@ -64,10 +65,11 @@ class Dashboard extends Controller
         $data['userLoginJoineds'] = postJoin::where('join_user',$this->userLogin)->get();
         $data['userInfos'] = DB::select("SELECT * from userDetail, userAccount where userDetail.username = userAccount.username and userAccount.username = '".$this->userLogin."'");
         $data['userPosts'] = postEvent::where('post_owner',$this->userLogin)->get();
-        $data['userJoinedPosts'] = DB::SELECT("SELECT * from postEvent, postJoin where postEvent.post_id = postJoin.join_post and postJoin.join_user = '".$this->userLogin."' and postJoin.join_flag=1");
+        $data['userJoinedPosts'] = DB::SELECT("SELECT * from postEvent, postJoin where postEvent.post_id = postJoin.join_post and postJoin.join_user = '".$this->userLogin."' and postJoin.join_flag=0");
         $data['jumlahLikePosts'] = DB::SELECT("select like_post,count(like_id) as jumlahLikePost from postLike group by like_post");
         $data['jumlahJoinPosts'] = DB::SELECT("select join_post, count(join_id) as jumlahJoinPost from postJoin group by join_post");
         $data['comments'] = DB::SELECT("SELECT * FROM userDetail, postComment where userDetail.username = postComment.comment_user");
+        $data['groups'] = Group::get();
     	return view('dashboard/timeline',$data);
     }
 
@@ -137,7 +139,7 @@ class Dashboard extends Controller
             'nama_event' => 'required',
             'deskripsi_event' => 'required',
             'waktu_event' => 'required',
-            'lokasi_event' => 'required|numeric',
+            /*'lokasi_event' => 'required|numeric',*/
             'gambar_event' => 'image'
             );
             $flagGambar = 1;
@@ -147,8 +149,8 @@ class Dashboard extends Controller
             $rulesPostEvent = array(
             'nama_event' => 'required',
             'deskripsi_event' => 'required',
-            'waktu_event' => 'required',
-            'lokasi_event' => 'required|numeric'
+            'waktu_event' => 'required'
+           /* 'lokasi_event' => 'required|numeric'*/
             );
         }
         
@@ -164,7 +166,7 @@ class Dashboard extends Controller
             $nama_event = Input::get('nama_event');
             $deskripsi_event = Input::get('deskripsi_event');
             $waktu_event = Input::get('waktu_event');
-            $lokasi_event = Input::get('lokasi_event');
+            /*$lokasi_event = Input::get('lokasi_event');*/
             $waktu_event = str_replace('T', ' ', $waktu_event);
             
             if($flagGambar) 
@@ -189,9 +191,12 @@ class Dashboard extends Controller
             $modelPostEvent->post_text = $deskripsi_event;
             if($flagGambar) $modelPostEvent->post_photo = $fotoEvent;
             $modelPostEvent->post_owner = $this->userLogin;
-            $modelPostEvent->post_location = $lokasi_event;
+            $modelPostEvent->post_location = $this->userLoginLocation;
             $modelPostEvent->post_date = $waktu_event;
             $modelPostEvent->post_nameEvent = $nama_event;
+
+
+
 
             if($modelPostEvent->save())
             {
@@ -294,10 +299,11 @@ class Dashboard extends Controller
         $data['userLoginJoineds'] = postJoin::where('join_user',$this->userLogin)->get();
         $data['userInfos'] = DB::select("SELECT * from userDetail, userAccount where userDetail.username = userAccount.username and userAccount.username = '".$this->userLogin."'");
         $data['userPosts'] = postEvent::where('post_owner',$this->userLogin)->get();
-        $data['userJoinedPosts'] = DB::SELECT("SELECT * from postEvent, postJoin where postEvent.post_id = postJoin.join_post and postJoin.join_user = '".$this->userLogin."' and postJoin.join_flag=1");
+        $data['userJoinedPosts'] = DB::SELECT("SELECT * from postEvent, postJoin where postEvent.post_id = postJoin.join_post and postJoin.join_user = '".$this->userLogin."' and postJoin.join_flag=0");
         $data['jumlahLikePosts'] = DB::SELECT("select like_post,count(like_id) as jumlahLikePost from postLike group by like_post");
         $data['jumlahJoinPosts'] = DB::SELECT("select join_post, count(join_id) as jumlahJoinPost from postJoin group by join_post");
         $data['comments'] = DB::SELECT("SELECT * FROM userDetail, postComment where userDetail.username = postComment.comment_user");
+        $data['groups'] = Group::get();
         return view('dashboard/post',$data);
         }
         else return view('errors/404');
@@ -312,7 +318,7 @@ class Dashboard extends Controller
         $data['userLoginJoineds'] = postJoin::where('join_user',$this->userLogin)->get();
         $data['userInfos'] = DB::select("SELECT * from userDetail, userAccount where userDetail.username = userAccount.username and userAccount.username = '".$this->userLogin."'");
         $data['userPosts'] = postEvent::where('post_owner',$this->userLogin)->get();
-        $data['userJoinedPosts'] = DB::SELECT("SELECT * from postEvent, postJoin where postEvent.post_id = postJoin.join_post and postJoin.join_user = '".$this->userLogin."' and postJoin.join_flag=1");
+        $data['userJoinedPosts'] = DB::SELECT("SELECT * from postEvent, postJoin where postEvent.post_id = postJoin.join_post and postJoin.join_user = '".$this->userLogin."' and postJoin.join_flag=0");
         return view('dashboard/editpost',$data);
         }
         else return view('errors/404');
